@@ -34,7 +34,6 @@ clone-repo:
     - cd tangogql-ariadne/
     - cat $TRIGGER_PAYLOAD > payload.json
     - if [ -z $BRANCH ]; then git checkout $(jq -r '.checkout_sha | select( . != null )' payload.json); else git checkout $BRANCH; fi
-    - sed -i 's/"secret":""/"secret":"'$SECRET'"/g' config.json
   artifacts:
     reports:
       dotenv: build.env
