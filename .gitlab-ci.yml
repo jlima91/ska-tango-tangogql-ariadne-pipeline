@@ -76,6 +76,12 @@ python-lint:
   after_script:
     - mv build/reports/linting-python.xml build/reports/linting.xml
 
+python-test:
+  allow_failure: true
+  before_script:
+    - cd tangogql-ariadne
+    - pip install -e .[tests]
+
 include:
 
 # OCI Images
