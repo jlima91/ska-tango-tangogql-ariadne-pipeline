@@ -29,7 +29,7 @@ DOCKER_VOLUMES ?= /var/run/docker.sock:/var/run/docker.sock
 CI_APPLICATION_TAG ?= $(shell git rev-parse --verify --short=8 HEAD)
 DOCKERFILE ?= Dockerfile
 EXECUTOR ?= docker
-STAGE ?= build_tangogql-ariadne_artefacts
+STAGE ?= build_tangogql_ariadne_artefacts
 
 #
 # include makefile to pick up the standard Make targets, e.g., 'make build'

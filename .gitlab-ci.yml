@@ -28,7 +28,7 @@ clone-repo:
     - k8srunner
   script:
     - export VERSION=$(make show-version)
-    - echo "tangogql-ariadne_TEST_IMAGE=${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/ska-tango-tangogql-ariadne:${VERSION}-dev.c${CI_COMMIT_SHORT_SHA}" > build.env
+    - echo "tangogql_ariadne_TEST_IMAGE=${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/ska-tango-tangogql-ariadne:${VERSION}-dev.c${CI_COMMIT_SHORT_SHA}" > build.env
     - rm -fR tangogql-ariadne
     - git clone https://gitlab.com/tango-controls/incubator/tangogql-ariadne.git
     - cd tangogql-ariadne/
