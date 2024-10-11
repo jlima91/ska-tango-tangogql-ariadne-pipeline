@@ -5,3 +5,4 @@ PrivateRules.mak
 build/
 Chart.lock
 tangogql-ariadne/
+*.xml
