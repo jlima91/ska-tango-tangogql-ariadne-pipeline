@@ -3,11 +3,11 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}
+  name: {{ template "tangogql.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Name }}
-    chart: {{ template "tangogql-ariadne.chart" . }}
+    app: {{ template "tangogql.name" . }}-{{ .Release.Name }}
+    chart: {{ template "tangogql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -18,9 +18,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /data/{{ template "tangogql-ariadne.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}/
+    path: /data/{{ template "tangogql.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}/
   claimRef:
-    name: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Name }}
+    name: {{ template "tangogql.name" . }}-{{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
 {{ end }}
 ---
@@ -28,11 +28,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Name }}
+  name: {{ template "tangogql.name" . }}-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Name }}
-    chart: {{ template "tangogql-ariadne.chart" . }}
+    app: {{ template "tangogql.name" . }}-{{ .Release.Name }}
+    chart: {{ template "tangogql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -40,7 +40,7 @@ spec:
     requests:
       storage: 1Gi
 {{ if .Values.global.minikube }}
-  volumeName: {{ template "tangogql-ariadne.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}
+  volumeName: {{ template "tangogql.name" . }}-{{ .Release.Namespace }}-{{ .Release.Name }}
   storageClassName: static
   accessModes:
   - ReadWriteOnce

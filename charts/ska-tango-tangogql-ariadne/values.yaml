@@ -17,11 +17,11 @@ global:
   operator: true
   cluster_domain: cluster.local
 
-tangogql-ariadne:
+tangogql:
   image:
     registry: artefact.skao.int
     image: ska-tango-tangogql-ariadne
-    tag: 0.0.1
+    tag: 0.0.1-dirty
     pullPolicy: IfNotPresent
   replicas: 1
   resources:
