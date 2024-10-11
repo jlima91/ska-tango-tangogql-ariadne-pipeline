@@ -99,6 +99,8 @@ python-test:
     - pytest --cov=$MODULE_NAME --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
   after_script:
     - ls -a
+    - cd ..
+    - ls -a
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
     when: always
