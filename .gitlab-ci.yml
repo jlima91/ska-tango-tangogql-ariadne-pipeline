@@ -98,6 +98,7 @@ python-test:
   script:
     - pytest --cov=$MODULE_NAME --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
   after_script:
+    - mkdir -p /build/reports
     - cp tangogql-ariadne/report.xml /build/reports/code-coverage.xml
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
