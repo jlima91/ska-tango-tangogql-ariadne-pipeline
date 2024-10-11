@@ -92,7 +92,8 @@ python-test:
     - apt install -y jq $EXTRA_DEB_PACKAGES
     - python -m venv /tools
     - /tools/bin/python -m pip install wheel-inspect
-    - export MODULE_NAME=$(/tools/bin/wheel2json dist/ska_tango_tangogql_ariadne-*.whl | jq -r .derived.modules[0])
+    - export WHEEL_FILE=$(ls dist/ska_tango_tangogql_ariadne-*.whl)
+    - export MODULE_NAME=$(/tools/bin/wheel2json $WHEEL_FILE | jq -r .derived.modules[0])
     - pip install pytest-cov pytest-forked
     - pip install -e ".[tests]"
   script:
@@ -105,6 +106,7 @@ python-test:
     when: always
     paths:
       - ./tangogql-ariadne
+      - ./dist
     reports:
       junit: /build/reports/code-coverage.xml
 
