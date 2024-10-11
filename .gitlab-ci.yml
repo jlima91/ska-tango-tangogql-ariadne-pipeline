@@ -92,22 +92,21 @@ python-test:
     - apt install -y jq $EXTRA_DEB_PACKAGES
     - python -m venv /tools
     - /tools/bin/python -m pip install wheel-inspect
-    - export MODULE_NAME=$(/tools/bin/wheel2json dist/*.whl | jq -r .derived.modules[0])
+    - export MODULE_NAME=$(/tools/bin/wheel2json dist/ska_tango_tangogql_ariadne-*.whl | jq -r .derived.modules[0])
+    - echo "Module Name: $MODULE_NAME"
     - pip install pytest-cov pytest-forked
     - pip install -e ".[tests]"
   script:
     - pytest --cov=$MODULE_NAME --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
   after_script:
-    - ls -a
-    - cd ..
-    - ls -a
+    - cp tangogql-ariadne/report.xml /build/reports/code-coverage.xml
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
     when: always
     paths:
-      - .
+      - ./tangogql-ariadne
     reports:
-      junit: report.xml
+      junit: /build/reports/code-coverage.xml
 
 
 include:
