@@ -81,6 +81,7 @@ python-test:
   before_script:
     - cd tangogql-ariadne
     - pip install -e .[tests]
+    - cd ..
 
 include:
 
