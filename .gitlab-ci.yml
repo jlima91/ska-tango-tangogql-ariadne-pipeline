@@ -35,6 +35,8 @@ clone-repo:
     - cat $TRIGGER_PAYLOAD > payload.json
     - if [ -z $BRANCH ]; then git checkout $(jq -r '.checkout_sha | select( . != null )' payload.json); else git checkout $BRANCH; fi
   artifacts:
+    paths:
+        - tangogql-ariadne/
     reports:
       dotenv: build.env
 
@@ -84,6 +86,7 @@ python-test:
       - PYTHON_VERSION: ["3.10", "3.11", "3.12"]
   allow_failure: true
   before_script:
+    - cd tangogql-ariadne/
     - ls -a
     - apt update
     - apt install -y jq $EXTRA_DEB_PACKAGES
