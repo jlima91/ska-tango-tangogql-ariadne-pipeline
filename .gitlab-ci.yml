@@ -98,13 +98,12 @@ python-test:
   script:
     - pytest --cov=$MODULE_NAME --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
   after_script:
-    - cp report.xml build/code-coverage.xml
+    - ls -a
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
     when: always
     paths:
-      - htmlcov/
-      - report.xml
+      - .
     reports:
       junit: report.xml
 
