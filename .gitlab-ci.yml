@@ -93,7 +93,6 @@ python-test:
     - python -m venv /tools
     - /tools/bin/python -m pip install wheel-inspect
     - export MODULE_NAME=$(/tools/bin/wheel2json dist/ska_tango_tangogql_ariadne-*.whl | jq -r .derived.modules[0])
-    - echo "Module Name: $MODULE_NAME"
     - pip install pytest-cov pytest-forked
     - pip install -e ".[tests]"
   script:
