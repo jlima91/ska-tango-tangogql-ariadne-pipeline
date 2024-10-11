@@ -1,0 +1,7 @@
+requirements.lock
+/charts/ska-tango-tangogql-ariadne/charts/
+PrivateRules.mak
+.coverage
+build/
+Chart.lock
+tangogql-ariadne/
