@@ -5,7 +5,7 @@ SECRET?=
 OCI_IMAGES=ska-tango-tangogql-ariadne
 PYTHON_SRC=tangogql-ariadne/
 PYTHON_TEST_FILE=tangogql-ariadne/tests/
-PYTHON_LINT_TARGET=tangogql-ariadne/tangogql-ariadne/
+PYTHON_LINT_TARGET=tangogql-ariadne/tangogql
 #tangogql-ariadne/tests/
 PYTHON_VARS_AFTER_PYTEST=--cov=tangogql-ariadne/tangogql-ariadne
 PROJECT=ska-tango-tangogql-ariadne
