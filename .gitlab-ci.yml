@@ -103,6 +103,10 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/python-build.gitlab-ci.yml'
 
+# Python packages test
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/python-test.gitlab-ci.yml'
+
 # Python packages publish
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/python-publish.gitlab-ci.yml'
