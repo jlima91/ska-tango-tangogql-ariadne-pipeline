@@ -97,17 +97,17 @@ python-test:
   script:
     - pytest --cov=tangogql --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
   after_script:
-    - mkdir -p /build/reports
-    - cp tangogql-ariadne/report.xml /build/reports/code-coverage.xml
-    - cp -R tangogql-ariadne/htmlcov /build/reports/
+    - mkdir -p ./build/reports
+    - cp report.xml ./build/reports/code-coverage.xml
+    - cp -R htmlcov ./build/reports/
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
     when: always
     paths:
       - ./tangogql-ariadne
-      - build/
+      - ./build/
     reports:
-      junit: /build/reports/code-coverage.xml
+      junit: ./build/reports/code-coverage.xml
 
 
 include:
