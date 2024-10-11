@@ -77,11 +77,34 @@ python-lint:
     - mv build/reports/linting-python.xml build/reports/linting.xml
 
 python-test:
+  stage: test
+  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-bookworm
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.9", "3.10", "3.11", "3.12"]
   allow_failure: true
   before_script:
     - cd tangogql-ariadne
-    - pip install -e .[tests]
-    - cd ..
+    - apt update
+    - apt install -y jq $EXTRA_DEB_PACKAGES
+    - python -m venv /tools
+    - /tools/bin/python -m pip install wheel-inspect
+    - export MODULE_NAME=$(/tools/bin/wheel2json dist/*.whl | jq -r .derived.modules[0])
+    - pip install pytest-cov pytest-forked
+    - pip install -e ".[tests]"
+  script:
+    - pytest --cov=$MODULE_NAME --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
+  after_script:
+    - cp report.xml build/code-coverage.xml
+  coverage: '/^TOTAL.+?(\d+\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - htmlcov/
+      - report.xml
+    reports:
+      junit: report.xml
+
 
 include:
 
@@ -109,10 +132,6 @@ include:
 # Python packages build
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/python-build.gitlab-ci.yml'
-
-# Python packages test
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/python-test.gitlab-ci.yml'
 
 # Python packages publish
   - project: 'ska-telescope/templates-repository'
