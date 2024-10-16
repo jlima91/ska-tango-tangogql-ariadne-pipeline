@@ -78,6 +78,7 @@ python-lint:
   stage: lint
   allow_failure: true
   script:
+    - cd tangogql-ariadne/
     - apt update && apt install -y jq
     - pip install pytest-cov pytest-forked isort black flake8 pylint pylint-junit
     - pip install -e '.[tests]'
