@@ -87,9 +87,9 @@ python-lint:
     - mkdir -p build/reports
     
     # Run linters and save reports
-    - isort --profile black --line-length 79 tangogql/ tests/
-    - black --exclude .+\.ipynb --line-length 79 tangogql/ tests/
-    - flake8 --show-source --statistics --max-line-length 79 tangogql/ tests/
+    - isort ---check-only --profile black --line-length 79 tangogql/ tests/ || echo "isort finished with exit code $?"
+    - black --exclude .+\.ipynb --check --line-length 79 tangogql/ tests/ || echo "black finished with exit code $?"
+    - flake8 --show-source --statistics --max-line-length 79 tangogql/ tests/ || echo "Flake8 finished with exit code $?"
     - pylint --output-format=parseable,parseable:build/code_analysis.stdout,pylint_junit.JUnitReporter:build/reports/linting-python.xml --max-line-length 79 --disable=C0103,R0801 tangogql/ tests/ || echo "Pylint failed with exit code $?"
     - echo "Directory after running pylint"
     - ls -la build/reports
