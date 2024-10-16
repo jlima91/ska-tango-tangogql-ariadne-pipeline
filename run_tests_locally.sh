@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the Python versions to test
-PYTHON_VERSIONS=("3.10") # "3.11" "3.12"
+PYTHON_VERSIONS=("3.11")
 
 for PYTHON_VERSION in "${PYTHON_VERSIONS[@]}"; do
   echo "Running tests with Python $PYTHON_VERSION..."

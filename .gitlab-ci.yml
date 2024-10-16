@@ -74,7 +74,7 @@ uninstall-tangogql-ariadne-chart:
       namespace: $KUBE_NAMESPACE
 
 python-lint:
-  image: python:3.10
+  image: python:3.11
   stage: lint
   allow_failure: true
   script:
@@ -106,7 +106,7 @@ python-test:
   image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-bookworm
   parallel:
     matrix:
-      - PYTHON_VERSION: ["3.10", "3.11", "3.12"]
+      - PYTHON_VERSION: ["3.11", "3.12"]
   allow_failure: true
   before_script:
     - cd tangogql-ariadne/

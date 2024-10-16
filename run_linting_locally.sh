@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the Python versions to test
-PYTHON_VERSIONS=("3.10") # "3.11" "3.12"
+PYTHON_VERSIONS=("3.11")
 
 for PYTHON_VERSION in "${PYTHON_VERSIONS[@]}"; do
   echo "Running tests with Python $PYTHON_VERSION..."
@@ -9,7 +9,7 @@ for PYTHON_VERSION in "${PYTHON_VERSIONS[@]}"; do
   docker run -it --rm \
     -v "$(pwd):/build" \
     -w /build \
-    python:3.10 \
+    python:3.11 \
     bash -c "
       # Change directory to tangogql-ariadne and perform setup as in 'before_script'
       cd tangogql-ariadne/;
