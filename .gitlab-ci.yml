@@ -98,7 +98,7 @@ python-lint:
     
   artifacts:
     paths:
-      - ./
+      - ./build
     when: always
 
 python-test:
