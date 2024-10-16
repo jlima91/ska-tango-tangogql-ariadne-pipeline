@@ -97,7 +97,7 @@ python-lint:
     
   artifacts:
     paths:
-      - build/reports/linting.xml
+      - ./
     when: always
 
 python-test:
