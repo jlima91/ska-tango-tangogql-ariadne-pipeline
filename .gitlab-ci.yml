@@ -74,9 +74,30 @@ uninstall-tangogql-ariadne-chart:
       namespace: $KUBE_NAMESPACE
 
 python-lint:
+  image: python:3.10
+  stage: lint
   allow_failure: true
+  script:
+    - apt update && apt install -y jq
+    - pip install pytest-cov pytest-forked isort black flake8 pylint pylint-junit
+    - pip install -e '.[tests]'
+    
+    # Ensure the build directory exists
+    - mkdir -p build/reports
+    
+    # Run linters and save reports
+    - isort --profile black --line-length 79 tangogql/ tests/
+    - black --exclude .+\.ipynb --line-length 79 tangogql/ tests/
+    - flake8 --show-source --statistics --max-line-length 79 tangogql/ tests/
+    - pylint --output-format=parseable,parseable:build/code_analysis.stdout,pylint_junit.JUnitReporter:build/reports/linting-python.xml --max-line-length 79 --disable=C0103,R0801 tangogql/ tests/
+    
   after_script:
     - mv build/reports/linting-python.xml build/reports/linting.xml
+    
+  artifacts:
+    paths:
+      - build/reports/linting.xml
+    when: always
 
 python-test:
   stage: test
@@ -89,17 +110,18 @@ python-test:
     - cd tangogql-ariadne/
     - ls -a
     - apt update
-    - apt install -y jq $EXTRA_DEB_PACKAGES
+    - apt install -y jq
     - python -m venv /tools
     - /tools/bin/python -m pip install wheel-inspect
     - pip install pytest-cov pytest-forked
     - pip install -e ".[tests]"
   script:
-    - pytest --cov=tangogql --cov-branch --cov-report term-missing --cov-report html --junitxml=report.xml $PYTEST_EXTRA_ARGS
+    - pytest -k unit --forked -vv --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
   after_script:
     - mkdir -p ./build/reports
-    - cp tangogql-ariadne/report.xml ./build/reports/code-coverage.xml
-    - cp -R tangogql-ariadne/htmlcov ./build/reports/
+    - cp tangogql-ariadne/build/reports/code-coverage.xml ./build/reports/code-coverage.xml
+    - cp tangogql-ariadne/build/reports/unit-tests.xml./build/reports/unit-tests.xml
+    - cp -R tangogql-ariadne/build/reports/code-coverage ./build/reports/
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
     when: always

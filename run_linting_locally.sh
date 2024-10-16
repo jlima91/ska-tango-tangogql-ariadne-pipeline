@@ -9,22 +9,26 @@ for PYTHON_VERSION in "${PYTHON_VERSIONS[@]}"; do
   docker run -it --rm \
     -v "$(pwd):/build" \
     -w /build \
-    ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-bookworm \
+    python:3.10 \
     bash -c "
       # Change directory to tangogql-ariadne and perform setup as in 'before_script'
       cd tangogql-ariadne/;
       ls -a;
       apt update;
       apt install -y jq;
-      python -m venv /tools;
-      /tools/bin/python -m pip install wheel-inspect;
       
       # Install pytest and other test dependencies
-      pip install pytest-cov pytest-forked;
+      pip install pytest-cov pytest-forked isort black flake8 pylint pylint-junit;
       pip install -e '.[tests]';
 
+      # Ensure the build directory exists
+      mkdir -p build/reports;
+
       # Run pytest with coverage options
-      pytest -k unit --forked -vv --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
+      isort --profile black --line-length 79  tangogql/ tests/
+      black --exclude .+\.ipynb --line-length 79  tangogql/ tests/
+      flake8 --show-source --statistics --max-line-length 79  tangogql/ tests/
+      pylint --output-format=parseable,parseable:build/code_analysis.stdout,pylint_junit.JUnitReporter:build/reports/linting.xml --max-line-length 79 --disable=C0103,R0801 tangogql/ tests/
     "
 
   echo "Finished tests with Python $PYTHON_VERSION."
