@@ -122,7 +122,7 @@ python-test:
   after_script:
     - mkdir -p ./build/reports
     - cp tangogql-ariadne/build/reports/code-coverage.xml ./build/reports/code-coverage.xml
-    - cp tangogql-ariadne/build/reports/unit-tests.xml./build/reports/unit-tests.xml
+    - cp tangogql-ariadne/build/reports/unit-tests.xml ./build/reports/unit-tests.xml
     - cp -R tangogql-ariadne/build/reports/code-coverage ./build/reports/
   coverage: '/^TOTAL.+?(\d+\%)$/'
   artifacts:
