@@ -93,7 +93,9 @@ python-lint:
     - pylint --output-format=parseable,parseable:build/code_analysis.stdout,pylint_junit.JUnitReporter:build/reports/linting-python.xml --max-line-length 79 --disable=C0103,R0801 tangogql/ tests/ || echo "Pylint failed with exit code $?"
     - echo "Directory after running pylint"
     - ls -la build/reports
-    - cp build/reports/linting-python.xml ./build/reports/linting.xml
+  after_script:
+    - mkdir -p ./build/reports
+    - cp tangogql-ariadne/build/reports/linting-python.xml  ./build/reports/linting.xml
   artifacts:
     paths:
       - ./build
