@@ -94,7 +94,7 @@ python-lint:
     - echo "Directory after running pylint"
     - ls -la build/reports
   after_script:
-    - cp tangogql-ariadne/build/reports/linting-python.xml ./build/reports/linting.xml
+    - cp /build/reports/linting-python.xml ./build/reports/linting.xml
     
   artifacts:
     paths:
