@@ -1,0 +1,166 @@
+image: $SKA_K8S_TOOLS_BUILD_DEPLOY
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  CHARTS_TO_PUBLISH: ska-tango-tangogql-ariadne
+  MINIKUBE: false
+
+cache:
+  paths:
+    - tangogql-ariadne
+    - build
+
+stages:
+  - deploy-stfc
+  - clone
+  - lint
+  - build
+  - scan
+  - push
+  - test
+  - join-reports
+  - pages
+  - publish
+
+clone-repo:
+  stage: clone
+  tags:
+    - k8srunner
+  script:
+    - export VERSION=$(make show-version)
+    - echo "tangogql_ariadne_TEST_IMAGE=${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/ska-tango-tangogql-ariadne:${VERSION}-dev.c${CI_COMMIT_SHORT_SHA}" > build.env
+    - rm -fR tangogql-ariadne
+    - git clone https://gitlab.com/tango-controls/incubator/tangogql-ariadne.git
+    - cd tangogql-ariadne/
+    - cat $TRIGGER_PAYLOAD > payload.json
+    - if [ -z $BRANCH ]; then git checkout $(jq -r '.checkout_sha | select( . != null )' payload.json); else git checkout $BRANCH; fi
+  artifacts:
+    paths:
+        - tangogql-ariadne/
+    reports:
+      dotenv: build.env
+
+install-tangogql-ariadne-chart:
+  stage: deploy-stfc
+  tags:
+    - k8srunner
+  when: manual
+  variables:
+    KUBE_NAMESPACE: "taranta-namespace"
+  script:
+    - make k8s-install-chart
+    - make k8s-wait
+  environment:
+    name: tangogql-ariadne
+    on_stop: uninstall-tangogql-ariadne-chart
+    url: "https://k8s.stfc.skao.int/taranta-namespace/taranta"
+    kubernetes:
+      namespace: $KUBE_NAMESPACE
+
+uninstall-tangogql-ariadne-chart:
+  stage: deploy-stfc
+  tags:
+    - k8srunner
+  when: manual
+  variables:
+    KUBE_NAMESPACE: "taranta-namespace"
+  script:
+    - make k8s-uninstall-chart
+  environment:
+    name: "tangogql-ariadne"
+    action: stop
+    url: "https://k8s.stfc.skao.int/taranta-namespace/taranta"
+    kubernetes:
+      namespace: $KUBE_NAMESPACE
+
+python-lint:
+  image: python:3.11
+  stage: lint
+  allow_failure: true
+  script:
+    - cd tangogql-ariadne/
+    - apt update && apt install -y jq
+    - pip install pytest-cov pytest-forked isort black flake8 pylint pylint-junit
+    - pip install -e '.[tests]'
+    
+    # Ensure the build directory exists
+    - mkdir -p build/reports
+    
+    # Run linters and save reports
+    - isort ---check-only --profile black --line-length 79 tangogql/ tests/ || echo "isort finished with exit code $?"
+    - black --exclude .+\.ipynb --check --line-length 79 tangogql/ tests/ || echo "black finished with exit code $?"
+    - flake8 --show-source --statistics --max-line-length 79 tangogql/ tests/ || echo "Flake8 finished with exit code $?"
+    - pylint --output-format=parseable,parseable:build/code_analysis.stdout,pylint_junit.JUnitReporter:build/reports/linting-python.xml --max-line-length 79 --disable=C0103,R0801 tangogql/ tests/ || echo "Pylint failed with exit code $?"
+    - echo "Directory after running pylint"
+    - ls -la build/reports
+  after_script:
+    - cp tangogql-ariadne/build/reports/linting-python.xml ./build/reports/linting.xml
+    
+  artifacts:
+    paths:
+      - ./build
+    when: always
+
+python-test:
+  stage: test
+  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-bookworm
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12"]
+  allow_failure: true
+  before_script:
+    - cd tangogql-ariadne/
+    - ls -a
+    - apt update
+    - apt install -y jq
+    - python -m venv /tools
+    - /tools/bin/python -m pip install wheel-inspect
+    - pip install pytest-cov pytest-forked
+    - pip install -e ".[tests]"
+  script:
+    - pytest --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
+  after_script:
+    - mkdir -p ./build/reports
+    - cp tangogql-ariadne/build/reports/code-coverage.xml ./build/reports/code-coverage.xml
+    - cp tangogql-ariadne/build/reports/unit-tests.xml./build/reports/unit-tests.xml
+    - cp -R tangogql-ariadne/build/reports/code-coverage ./build/reports/
+  coverage: '/^TOTAL.+?(\d+\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - ./tangogql-ariadne
+      - ./build/
+    reports:
+      junit: ./build/reports/code-coverage.xml
+
+
+include:
+
+# OCI Images
+  # do a custom set of build and publish stages
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+
+# Helm Charts
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+
+# changelog release page
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/changelog.gitlab-ci.yml'
+
+# .post step finalisers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+
+# Python packages build
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/python-build.gitlab-ci.yml'
+
+# Python packages publish
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/python-publish.gitlab-ci.yml'
+
+# Python packages release
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
