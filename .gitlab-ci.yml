@@ -118,7 +118,7 @@ python-test:
     - pip install pytest-cov pytest-forked
     - pip install -e ".[tests]"
   script:
-    - pytest --forked -vv --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
+    - pytest --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
   after_script:
     - mkdir -p ./build/reports
     - cp tangogql-ariadne/build/reports/code-coverage.xml ./build/reports/code-coverage.xml

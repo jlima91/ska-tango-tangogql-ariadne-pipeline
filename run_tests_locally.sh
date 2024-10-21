@@ -24,7 +24,7 @@ for PYTHON_VERSION in "${PYTHON_VERSIONS[@]}"; do
       pip install -e '.[tests]';
 
       # Run pytest with coverage options
-      pytest --forked -vv --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
+      pytest --cov=tangogql --cov-report=term-missing --cov-report html:build/reports/code-coverage --cov-report xml:build/reports/code-coverage.xml --junitxml=build/reports/unit-tests.xml tests/
     "
 
   echo "Finished tests with Python $PYTHON_VERSION."
