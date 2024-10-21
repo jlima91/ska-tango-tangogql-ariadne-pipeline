@@ -64,3 +64,6 @@ include .make/oci.mk
 K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set global.exposeAllDS=$(EXPOSE_All_DS) \
 	--set global.cluster_domain=$(CLUSTER_DOMAIN)
+
+build-docs:
+	docker run --rm -d -v $(PWD):/tmp -w /tmp/docs netresearch/sphinx-buildbox sh -c "make html"
