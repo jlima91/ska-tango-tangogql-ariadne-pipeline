@@ -1,0 +1,3 @@
+[run]
+omit =
+    tangogql/_version.py
