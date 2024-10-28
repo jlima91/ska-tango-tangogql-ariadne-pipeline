@@ -21,13 +21,6 @@ spec:
             name: {{ template "tangogql.name" . }}-{{ .Release.Name }}
             port:
               number: 5004
-      - path: {{ if .Values.basename }}/{{ .Release.Namespace }}{{ end }}/{{ .Values.tangoDB}}/(graphiql.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ template "tangogql.name" . }}-{{ .Release.Name }}
-            port:
-              number: 5004
       - path: {{ if .Values.basename }}/{{ .Release.Namespace }}{{ end }}/{{ .Values.tangoDB}}/(socket.*)
         pathType: ImplementationSpecific
         backend:

@@ -34,6 +34,9 @@ clone-repo:
     - cd tangogql-ariadne/
     - cat $TRIGGER_PAYLOAD > payload.json
     - if [ -z $BRANCH ]; then git checkout $(jq -r '.checkout_sha | select( . != null )' payload.json); else git checkout $BRANCH; fi
+    # Check if config.json exists; if not, create it with default content
+    - if [ ! -f config.json ]; then echo '{"secret":""}' > config.json; fi
+    - sed -i 's/"secret":""/"secret":"'$SECRET'"/g' config.json
   artifacts:
     paths:
         - tangogql-ariadne/
