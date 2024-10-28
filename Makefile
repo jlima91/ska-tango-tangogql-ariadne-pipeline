@@ -66,4 +66,4 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set global.cluster_domain=$(CLUSTER_DOMAIN)
 
 build-docs:
-	docker run --rm -d -v $(PWD):/tmp -w /tmp/docs netresearch/sphinx-buildbox sh -c "make html"
+	docker run --rm -v $(PWD):/tmp -w /tmp/docs netresearch/sphinx-buildbox sh -c "make html"
