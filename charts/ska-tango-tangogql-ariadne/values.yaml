@@ -21,7 +21,7 @@ tangogql:
   image:
     registry: artefact.skao.int
     image: ska-tango-tangogql-ariadne
-    tag: 0.0.2
+    tag: 0.1.0
     pullPolicy: IfNotPresent
   replicas: 1
   resources:
