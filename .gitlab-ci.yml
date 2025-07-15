@@ -25,7 +25,7 @@ stages:
 clone-repo:
   stage: clone
   tags:
-    - k8srunner
+    - $SKA_DEFAULT_RUNNER
   script:
     - export VERSION=$(make show-version)
     - echo "tangogql_ariadne_TEST_IMAGE=${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/ska-tango-tangogql-ariadne:${VERSION}-dev.c${CI_COMMIT_SHORT_SHA}" > build.env
@@ -46,7 +46,7 @@ clone-repo:
 install-tangogql-ariadne-chart:
   stage: deploy-stfc
   tags:
-    - k8srunner
+    - $SKA_DEFAULT_RUNNER
   when: manual
   variables:
     KUBE_NAMESPACE: "taranta-namespace"
@@ -63,7 +63,7 @@ install-tangogql-ariadne-chart:
 uninstall-tangogql-ariadne-chart:
   stage: deploy-stfc
   tags:
-    - k8srunner
+    - $SKA_DEFAULT_RUNNER
   when: manual
   variables:
     KUBE_NAMESPACE: "taranta-namespace"
