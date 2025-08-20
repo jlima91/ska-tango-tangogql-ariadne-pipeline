@@ -50,7 +50,7 @@ spec:
         imagePullPolicy: IfNotPresent
         command:
           - /usr/local/bin/wait-for-it.sh
-          - {{ .Values.global.tango_host }}
+          - {{ default .Values.global.tango_host .Values.tango_host }}
           - --timeout=30
           - --strict
           - --
@@ -68,7 +68,7 @@ spec:
           - name: PYTHONUNBUFFERED
             value: "1"
           - name: TANGO_HOST
-            value: {{ .Values.global.tango_host }}
+            value: {{ default .Values.global.tango_host .Values.tango_host }}
         ports:
         - name: tangogql-tcp
           containerPort: 5004

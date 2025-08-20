@@ -8,6 +8,10 @@ xauthority: "~/.Xauthority"
 basename: true
 tangoDB: taranta
 
+# Prefer a per-instance Tango host if set; chart templates fall back to global.tango_host.
+# Leave empty here; set it per instance from the parent chart.
+tango_host: ""
+
 logging: 
   level: DEBUG
 
@@ -62,5 +66,4 @@ ingress:
 nodeSelector: {}
 
 affinity: {}
-
 tolerations: []
