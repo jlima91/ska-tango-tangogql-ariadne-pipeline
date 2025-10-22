@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ska-tango-tangogql-ariadne"
-version = "1.0.5"
+version = "1.0.6"
 description = ""
 authors = ["HFRibeiro <helder.ribeiro@atlar.pt>"]
 license = "BSD-3-Clause"
