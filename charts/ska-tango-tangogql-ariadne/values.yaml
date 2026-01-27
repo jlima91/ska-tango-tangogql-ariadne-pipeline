@@ -25,7 +25,7 @@ tangogql:
   image:
     registry: artefact.skao.int
     image: ska-tango-tangogql-ariadne
-    tag: 1.0.7
+    tag: 1.0.8
     pullPolicy: IfNotPresent
   replicas: 1
   resources:
@@ -40,7 +40,7 @@ itango:
   image:
     registry: artefact.skao.int
     image: ska-tango-images-tango-itango
-    tag: 9.5.0
+    tag: 10.1.2
     pullPolicy: IfNotPresent
 
 ska-tango-base:
