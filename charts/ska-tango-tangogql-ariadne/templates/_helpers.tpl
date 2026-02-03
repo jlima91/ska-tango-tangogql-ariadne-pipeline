@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "tangogql.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Path prefix used by Ingress rules.
+*/}}
+{{- define "tangogql.ingress.pathPrefix" -}}
+{{- if .Values.basename -}}
+{{- printf "/%s/%s" .Release.Namespace .Values.tangoDB -}}
+{{- else -}}
+{{- printf "/%s" .Values.tangoDB -}}
+{{- end -}}
+{{- end -}}
