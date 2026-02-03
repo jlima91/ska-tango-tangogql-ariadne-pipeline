@@ -26,9 +26,9 @@ spec:
             name: {{ template "tangogql.name" . }}-{{ .Release.Name }}
             port:
               number: 5004
-      {{- if .Values.ingress.host }}
-      host: {{ .Values.ingress.host }}
-      {{- end }}
+    {{- if .Values.ingress.host }}
+    host: {{ .Values.ingress.host }}
+    {{- end }}
   {{- with .Values.ingress.tls }}
   tls:
     {{- . | toYaml | nindent 4 }}
