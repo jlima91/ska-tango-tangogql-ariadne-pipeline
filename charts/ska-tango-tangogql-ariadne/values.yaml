@@ -12,7 +12,7 @@ tangoDB: taranta
 # Leave empty here; set it per instance from the parent chart.
 tango_host: ""
 
-logging: 
+logging:
   level: DEBUG
 
 global:
@@ -30,10 +30,10 @@ tangogql:
   replicas: 1
   resources:
     requests:
-      cpu: 600m     # 600m = 0.6 CPU
+      cpu: 600m # 600m = 0.6 CPU
       memory: 512Mi # 512Mi = 0.5 GB mem
     limits:
-      cpu: 1000m     # 1000m = 1 CPU
+      cpu: 1000m # 1000m = 1 CPU
       memory: 1024Mi # 1024Mi = 1 GB mem
 
 itango:
@@ -49,19 +49,28 @@ ska-tango-base:
 # Configure Ingress resource that allow you to access the Tango REST API
 ingress:
   enabled: true
-  nginx: true
-  hostname: k8s.stfc.skao.int
 
   # Ingress annotations
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+
+  # Ingress class
+  ingressClassName: nginx
+
+  # Ingress host
+  #
+  # Leave empty to bind to '*'.
+  host: ""
 
   # Ingress TLS configuration
   #
-  tls:
-    enabled: true
-    secretname: "tls-secret-{{ template \"tangogql-ariadne.name\" . }}-{{ .Release.Name }}"
-    hostname: "{{ .Values.ingress.hostname }}"
-
+  # Example:
+  # tls:
+  #   - secretName: ska-tango-taranta-tls
+  #     hosts:
+  #       - tango.example.com
+  tls: []
 
 nodeSelector: {}
 
