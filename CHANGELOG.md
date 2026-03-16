@@ -1,7 +1,7 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.0.9
+The current version is 1.0.10
 
 * version 1.0.10:
 
