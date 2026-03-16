@@ -3,6 +3,11 @@ History of changes of tangoGQL
 
 The current version is 1.0.9
 
+* version 1.0.10:
+
+    - Fix attributes partial failures: isolate missing-device read errors per requested fullName
+    - Fix ValueError
+
 * version 1.0.9:
 
     - Address OOM issue on tangoGQL ariadne
