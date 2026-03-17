@@ -14,6 +14,7 @@ cache:
 
 stages:
   - deploy-stfc
+  - init
   - clone
   - lint
   - build
@@ -25,7 +26,7 @@ stages:
   - publish
 
 initialize_context:
-  stage: pre
+  stage: init
   cache:
     key: "sha-lock-$CI_PIPELINE_ID"
     paths:
