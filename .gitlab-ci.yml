@@ -3,6 +3,8 @@ image: $SKA_K8S_TOOLS_BUILD_DEPLOY
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   CHARTS_TO_PUBLISH: ska-tango-tangogql-ariadne
+  UPSTREAM_REPOSITORY: https://gitlab.com/tango-controls/web/tangogql-ariadne.git
+  TANGOGQL_ARIADNE_ID: 56418511
   MINIKUBE: false
 
 cache:
@@ -22,6 +24,46 @@ stages:
   - pages
   - publish
 
+initialize_context:
+  stage: .pre
+  cache:
+    key: "sha-lock-$CI_PIPELINE_ID"
+    paths:
+      - locked_sha.txt
+  script:
+    - |
+      if [ -f locked_sha.txt ]; then
+        echo "Found existing lock file from a previous attempt."
+        FINAL_SHA=$(cat locked_sha.txt)
+        echo "Restoring previous SHA: $FINAL_SHA"
+      else
+        echo "No lock file found. Proceeding with first-time fetch..."
+
+        if [ -n "$BRANCH" ]; then
+          echo "Source: Manual Input ($BRANCH)"
+          FINAL_SHA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}/repository/branches/${BRANCH}" | sed 's/.*"id":"\([^"]*\)".*/\1/')
+        elif [ -n "$TARGET_SHA" ]; then
+          echo "Source: Webhook. Using: $TARGET_SHA"
+          FINAL_SHA="$TARGET_SHA"
+        else
+          echo "Source: Internal Change. Fetching tangogql-ariadne default branch..."
+          PROJECT_DATA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}")
+          TARGET_DEFAULT=$(echo $PROJECT_DATA | sed 's/.*"default_branch":"\([^"]*\)".*/\1/')
+          echo "${PROJECT_DATA} --- DEFAULT BRANCH: ${TARGET_DEFAULT}"
+          FINAL_SHA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}/repository/branches/${TARGET_DEFAULT}" | sed 's/.*"id":"\([^"]*\)".*/\1/')
+        fi
+
+        # Save to cache file for retries of this job
+        echo "$FINAL_SHA" > locked_sha.txt
+      fi
+
+      # Always output to dotenv for OTHER jobs in the pipeline
+      echo "FINAL_SHA=$FINAL_SHA" > variables.env
+      echo "Final FINAL_SHA: ${FINAL_SHA}"
+  artifacts:
+    reports:
+      dotenv: variables.env
+
 clone-repo:
   stage: clone
   tags:
@@ -30,10 +72,10 @@ clone-repo:
     - export VERSION=$(make show-version)
     - echo "tangogql_ariadne_TEST_IMAGE=${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/ska-tango-tangogql-ariadne:${VERSION}-dev.c${CI_COMMIT_SHORT_SHA}" > build.env
     - rm -fR tangogql-ariadne
-    - git clone https://gitlab.com/tango-controls/incubator/tangogql-ariadne.git
+    - git clone ${UPSTREAM_REPOSITORY}
     - cd tangogql-ariadne/
-    - cat $TRIGGER_PAYLOAD > payload.json
-    - if [ -z $BRANCH ]; then git checkout $(jq -r '.checkout_sha | select( . != null )' payload.json); else git checkout $BRANCH; fi
+    - "echo Triggered by commit: ${FINAL_SHA:-No_SHA_provided}"
+    - git checkout $FINAL_SHA
     # Check if config.json exists; if not, create it with default content
     - if [ ! -f config.json ]; then echo '{"secret":""}' > config.json; fi
     - sed -i 's/"secret":""/"secret":"'$SECRET'"/g' config.json
