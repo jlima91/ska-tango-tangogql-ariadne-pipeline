@@ -69,6 +69,10 @@ spec:
             value: "1"
           - name: TANGO_HOST
             value: {{ default .Values.global.tango_host .Values.tango_host }}
+          - name: TANGOGQL_ATTRIBUTE_CLIENT_QUEUE_LIMIT
+            value: {{ .Values.global.attribute_client_queue_limit | quote }}
+          - name: TANGOGQL_ATTRIBUTE_GLOBAL_QUEUE_LIMIT
+            value: {{ .Values.global.attribute_global_queue_limit | quote }}
         ports:
         - name: tangogql-tcp
           containerPort: 5004
