@@ -1,7 +1,11 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.0.10
+The current version is 1.0.11
+
+* version 1.0.11:
+
+    - Increase global & client queue limit
 
 * version 1.0.10:
 
