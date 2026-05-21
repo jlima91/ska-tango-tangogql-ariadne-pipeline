@@ -1,7 +1,12 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.0.11
+The current version is 1.0.12
+
+* version 1.0.12:
+
+    - DevFloat values are thowing exception
+    - One failed device makes Attribute info fail for all
 
 * version 1.0.11:
 
