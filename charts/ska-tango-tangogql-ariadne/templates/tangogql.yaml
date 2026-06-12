@@ -85,8 +85,12 @@ spec:
         configMap:
           name: config-{{ template "tangogql.name" . }}-{{ .Release.Name }}
       - name: tangogql-logs
+{{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "tangogql.name" . }}-{{ .Release.Name }}
+{{- else }}
+        emptyDir: {}
+{{- end }}
 {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

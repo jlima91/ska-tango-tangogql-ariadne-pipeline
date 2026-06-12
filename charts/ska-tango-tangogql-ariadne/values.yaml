@@ -15,6 +15,10 @@ tango_host: ""
 logging:
   level: DEBUG
 
+persistence:
+  # Persist filesystem logs across Pod replacements. Disable to use emptyDir.
+  enabled: true
+
 global:
   minikube: false
   tango_host: databaseds-tango-base:10000

@@ -1,3 +1,4 @@
+{{- if .Values.persistence.enabled }}
 {{ if .Values.global.minikube }}
 ---
 kind: PersistentVolume
@@ -49,3 +50,4 @@ spec:
   accessModes:
   - ReadWriteMany
 {{ end }}
+{{- end }}
