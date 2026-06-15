@@ -1,7 +1,11 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.0.12
+The current version is 1.0.13
+
+* version 1.0.13:
+
+    - Fix the attribute read error
 
 * version 1.0.12:
 
