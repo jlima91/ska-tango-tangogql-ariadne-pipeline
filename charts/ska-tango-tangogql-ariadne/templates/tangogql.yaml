@@ -62,6 +62,9 @@ spec:
         volumeMounts:
         - mountPath: /var/log/tangogql
           name: tangogql-logs
+        - mountPath: /tangogql/logging.ini
+          name: logging-config
+          subPath: logging.ini
         env:
           - name: LOG_PATH
             value: "/var/log/tangogql"

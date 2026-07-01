@@ -1,0 +1,62 @@
+{{- $level := .Values.logging.level | default "INFO" -}}
+{{- $overrides := .Values.logging.loggers | default dict -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-{{ template "tangogql.name" . }}-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "tangogql.name" . }}-{{ .Release.Name }}
+    chart: {{ template "tangogql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  logging.ini: |
+    [loggers]
+    keys=root,ariadne2,tangogql,subscription,uvicorn
+
+    [handlers]
+    keys=basic
+
+    [formatters]
+    keys=basic
+
+    [logger_root]
+    level={{ $level }}
+    handlers=basic
+
+    [logger_ariadne2]
+    level={{ default $level (index $overrides "ariadne2") }}
+    handlers=basic
+    qualname=ariadne2
+    propagate=0
+
+    [logger_tangogql]
+    level={{ default $level (index $overrides "tangogql") }}
+    handlers=basic
+    qualname=tangogql
+    propagate=0
+
+    [logger_subscription]
+    level={{ default $level (index $overrides "subscription") }}
+    handlers=basic
+    qualname=subscription
+    propagate=0
+
+    [logger_uvicorn]
+    level={{ default $level (index $overrides "uvicorn") }}
+    handlers=basic
+    qualname=uvicorn
+    propagate=0
+
+    [handler_basic]
+    class=StreamHandler
+    level=NOTSET
+    formatter=basic
+    args=(sys.stdout,)
+
+    [formatter_basic]
+    format=%(asctime)s [%(name)s] %(levelname)s %(message)s
+    style=%
+    validate=True
+    class=logging.Formatter

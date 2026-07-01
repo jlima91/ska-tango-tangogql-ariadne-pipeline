@@ -13,7 +13,15 @@ tangoDB: taranta
 tango_host: ""
 
 logging:
-  level: DEBUG
+  # Global log level for all loggers (root, ariadne2, tangogql, subscription,
+  # uvicorn). One of DEBUG, INFO, WARNING, ERROR, CRITICAL. Rendered into
+  # logging.ini and mounted over /tangogql/logging.ini. Logs go to stdout.
+  level: WARNING
+  # Optional per-logger overrides, e.g.:
+  #   loggers:
+  #     uvicorn: WARNING
+  #     tangogql: ERROR
+  loggers: {}
 
 global:
   minikube: false
