@@ -1,9 +1,13 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.1.0
+The current version is 1.1.1
 
-* version 1.1.0:
+* version 1.1.1:
+
+    - Tangogql Authentication and authorization with MS Entra & Indigo
+
+* version 1.1.0: Not use
 
     - Tangogql Authentication and authorization with MS Entra & Indigo
 
