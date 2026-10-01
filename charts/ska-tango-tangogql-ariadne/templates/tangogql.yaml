@@ -73,6 +73,28 @@ spec:
             value: {{ .Values.global.attribute_client_queue_limit | quote }}
           - name: TANGOGQL_ATTRIBUTE_GLOBAL_QUEUE_LIMIT
             value: {{ .Values.global.attribute_global_queue_limit | quote }}
+          - name: TANGOGQL_OIDC_ISSUER
+            value: {{ .Values.global.oidc_issue | quote }}
+          - name: TANGOGQL_MSENTRA_TENANT_ID
+            value: {{ .Values.global.msentra_tenant_id | quote }}
+          - name: TANGOGQL_MSENTRA_API_ID
+            value: {{ .Values.global.msentra_api_id | quote }}
+          - name: TANGOGQL_MSENTRA_READ_ACCESS
+            value: {{ .Values.global.msentra_read_access | quote }}
+          - name: TANGOGQL_MSENTRA_READWRITE_ACCESS
+            value: {{ .Values.global.msentra_readwrite_access | quote }}
+          - name: TANGOGQL_IAMS_AUTHORITY
+            value: {{ .Values.global.iams_authority | quote }}
+          - name: TANGOGQL_IAMS_CLIENT_ID
+            value: {{ .Values.global.iams_client_id | quote }}
+          - name: TANGOGQL_IAMS_API_AUDIENCE
+            value: {{ .Values.global.iams_api_audience | quote }}
+          - name: TANGOGQL_IAMS_REQUIRE_AUDIENCE
+            value: {{ .Values.global.iams_require_audience | quote }}
+          - name: TANGOGQL_IAMS_READ_GROUP
+            value: {{ .Values.global.iams_read_group | quote }}
+          - name: TANGOGQL_IAMS_READWRITE_GROUP
+            value: {{ .Values.global.iams_readwrite_group | quote }}
         ports:
         - name: tangogql-tcp
           containerPort: 5004

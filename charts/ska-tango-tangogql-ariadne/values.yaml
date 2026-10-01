@@ -20,6 +20,21 @@ global:
   tango_host: databaseds-tango-base:10000
   attribute_client_queue_limit: 1501
   attribute_global_queue_limit: 5001
+
+  oidc_issuer: entra
+
+  msentra_tenant_id: 78887040-bad7-494b-8760-88dcacfb3805
+  msentra_api_id: 27f76d0a-79d7-443e-8718-5a38438f9eed
+  msentra_read_access: READ
+  msentra_readwrite_access: READWRITE
+
+  iams_authority: https://iam-1.staging.devx.skao.int
+  iams_client_id: e36f1b40-1b9d-431c-a5d3-bd3caf7ee1e5
+  iams_api_audience: test:icams
+  iams_require_audience: true
+  iams_read_group: app:tangogql_ariadne:readers
+  iams_readwrite_group: app:tangogql_ariadne:writers
+
   operator: true
   cluster_domain: cluster.local
 
