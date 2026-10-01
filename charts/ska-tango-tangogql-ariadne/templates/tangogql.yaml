@@ -74,7 +74,7 @@ spec:
           - name: TANGOGQL_ATTRIBUTE_GLOBAL_QUEUE_LIMIT
             value: {{ .Values.global.attribute_global_queue_limit | quote }}
           - name: TANGOGQL_OIDC_ISSUER
-            value: {{ .Values.global.oidc_issue | quote }}
+            value: {{ .Values.global.oidc_issuer | quote }}
           - name: TANGOGQL_MSENTRA_TENANT_ID
             value: {{ .Values.global.msentra_tenant_id | quote }}
           - name: TANGOGQL_MSENTRA_API_ID
