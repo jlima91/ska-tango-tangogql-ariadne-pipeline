@@ -17,6 +17,7 @@ logging:
 
 global:
   minikube: false
+  no_auth: false
   tango_host: databaseds-tango-base:10000
   attribute_client_queue_limit: 1501
   attribute_global_queue_limit: 5001
