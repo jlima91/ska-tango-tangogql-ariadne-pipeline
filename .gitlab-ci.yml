@@ -40,21 +40,25 @@ initialize_context:
 
         if [ -n "$BRANCH" ]; then
           echo "Source: Manual Input ($BRANCH)"
-          FINAL_SHA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}/repository/branches/${BRANCH}" | sed 's/.*"id":"\([^"]*\)".*/\1/')
+          REMOTE_REF=$(git ls-remote --exit-code "$UPSTREAM_REPOSITORY" "refs/heads/$BRANCH") || { echo "Could not resolve upstream branch: $BRANCH"; exit 1; }
+          FINAL_SHA=$(printf '%s\n' "$REMOTE_REF" | awk '{print $1}')
         elif [ -n "$TARGET_SHA" ]; then
           echo "Source: Webhook. Using: $TARGET_SHA"
           FINAL_SHA="$TARGET_SHA"
         else
           echo "Source: Internal Change. Fetching tangogql-ariadne default branch..."
-          PROJECT_DATA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}")
-          TARGET_DEFAULT=$(echo $PROJECT_DATA | sed 's/.*"default_branch":"\([^"]*\)".*/\1/')
-          echo "${PROJECT_DATA} --- DEFAULT BRANCH: ${TARGET_DEFAULT}"
-          FINAL_SHA=$(curl --header "PRIVATE-TOKEN: $MY_API_TOKEN" "${CI_API_V4_URL}/projects/${TANGOGQL_ARIADNE_ID}/repository/branches/${TARGET_DEFAULT}" | sed 's/.*"id":"\([^"]*\)".*/\1/')
+          REMOTE_REF=$(git ls-remote --exit-code "$UPSTREAM_REPOSITORY" HEAD) || exit 1
+          FINAL_SHA=$(printf '%s\n' "$REMOTE_REF" | awk '{print $1}')
         fi
-
-        # Save to cache file for retries of this job
-        echo "$FINAL_SHA" > locked_sha.txt
       fi
+
+      if ! printf '%s\n' "$FINAL_SHA" | grep -Eq '^[0-9a-fA-F]{7,40}$'; then
+        echo "Invalid upstream commit SHA. Check BRANCH, TARGET_SHA, or the cached locked_sha.txt."
+        exit 1
+      fi
+
+      # Save only a validated SHA to cache for retries of this job
+      echo "$FINAL_SHA" > locked_sha.txt
 
       # Always output to dotenv for OTHER jobs in the pipeline
       echo "FINAL_SHA=$FINAL_SHA" > variables.env
@@ -74,7 +78,7 @@ clone-repo:
     - git clone ${UPSTREAM_REPOSITORY}
     - cd tangogql-ariadne/
     - "echo Triggered by commit: ${FINAL_SHA:-No_SHA_provided}"
-    - git checkout $FINAL_SHA
+    - git checkout "$FINAL_SHA"
     # Check if config.json exists; if not, create it with default content
     - if [ ! -f config.json ]; then echo '{"secret":""}' > config.json; fi
     - sed -i 's/"secret":""/"secret":"'$SECRET'"/g' config.json
