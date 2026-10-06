@@ -1,9 +1,13 @@
 History of changes of tangoGQL
 ******************************
 
-The current version is 1.1.1
+The current version is 1.1.2
 
-* version 1.1.1:
+* version 1.1.2:
+
+    - Injected env variables for MS Entra & Indigo login
+
+* version 1.1.1: Not use
 
     - Tangogql Authentication and authorization with MS Entra & Indigo
 
